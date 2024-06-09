@@ -20,7 +20,7 @@
             display: block;
             margin-top: 10px;
         }
-        input[type="number"], input[type="file"] {
+        input[type="file"] {
             margin-top: 5px;
         }
         #preview {
@@ -33,12 +33,6 @@
     <form id="uploadForm" enctype="multipart/form-data">
         <label for="file">Choose an image:</label>
         <input type="file" id="file" name="file" accept="image/*" required><br><br>
-        
-        <label for="x">X Coordinate:</label>
-        <input type="number" id="x" name="x" value="0" required><br><br>
-        
-        <label for="y">Y Coordinate:</label>
-        <input type="number" id="y" name="y" value="0" required><br><br>
     </form>
     
     <div id="preview">
@@ -88,6 +82,15 @@
             return closestColor;
         }
 
+        function resizeImage(image, width, height) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(image, 0, 0, width, height);
+            return canvas.toDataURL('image/png');
+        }
+
         function quantizeImage(image, palette) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -111,12 +114,9 @@
             return canvas.toDataURL('image/png');
         }
 
-        setInterval(() => {
-            const fileInput = document.getElementById('file');
-            const x = parseInt(document.getElementById('x').value, 10);
-            const y = parseInt(document.getElementById('y').value, 10);
-
-            const file = fileInput.files[0];
+        const fileInput = document.getElementById('file');
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
             if (!file) {
                 return;
             }
@@ -144,7 +144,7 @@
                 img.src = event.target.result;
             };
             reader.readAsDataURL(file);
-        }, 1000);
+        });
     </script>
 </body>
 </html>
