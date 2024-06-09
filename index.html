@@ -56,10 +56,17 @@
         <h2>yo output image (64x64)</h2>
         <canvas id="previewCanvas" width="64" height="64"></canvas>
         <br>
-        <a id="downloadButton" download="quantized_image.png">
-            <input type="button" value="Download Quantized Image">
-        </a>
-    </div>
+<button id="downloadButton" onclick="downloadCanvas()">Download Quantized Image</button>
+
+<script>
+    function downloadCanvas() {
+        const canvas = document.getElementById('previewCanvas');
+        const link = document.createElement('a');
+        link.download = 'quantized_image.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+</script>
     
     <script>
         // Define the color palette
