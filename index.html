@@ -26,6 +26,9 @@
         #preview {
             margin-top: 20px;
         }
+        #previewCanvas {
+            border: 1px solid #333;
+        }
     </style>
 </head>
 <body>
@@ -135,7 +138,7 @@
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     
                     const resizedImage = resizeImage(img, 64, 64);
-                    const quantizedDataURL = quantizeImage(resizedImage, PALETTE);
+                    const quantizedDataURL = quantizeImage(img, PALETTE);
                     
                     const previewImage = new Image();
                     previewImage.onload = function() {
