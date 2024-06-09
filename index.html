@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Koolaid-in-Pepsi Animal Crossing Painting Converter</title>
+    <title>koolaid-in-pepsi's thing for animal crossing paintings or stuff</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,7 +20,7 @@
             display: block;
             margin-top: 10px;
         }
-        input[type="file"] {
+        input[type="file"], input[type="button"] {
             margin-top: 5px;
         }
         #preview {
@@ -29,14 +29,15 @@
     </style>
 </head>
 <body>
-    <h1>Koolaid-in-Pepsi Animal Crossing Painting Converter</h1>
+    <h1>koolaid-in-pepsi's thing for animal crossing paintings or stuff</h1>
     <form id="uploadForm" enctype="multipart/form-data">
         <label for="file">Choose an image:</label>
         <input type="file" id="file" name="file" accept="image/*" required><br><br>
+        <input type="button" id="uploadButton" value="Upload">
     </form>
     
     <div id="preview">
-        <h2>Resized and Quantized (64x64)</h2>
+        <h2>ur output image (64x64)</h2>
         <canvas id="previewCanvas" width="64" height="64"></canvas>
     </div>
     
@@ -103,7 +104,7 @@
 
             for (let i = 0; i < data.length; i += 4) {
                 const pixel = [data[i], data[i + 1], data[i + 2], data[i + 3]];
-                const closest = closestColor(pixel, palette);
+                const closest = closestColor(pixel, PALETTE);
                 data[i] = closest[0];
                 data[i + 1] = closest[1];
                 data[i + 2] = closest[2];
@@ -115,8 +116,9 @@
         }
 
         const fileInput = document.getElementById('file');
-        fileInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
+        const uploadButton = document.getElementById('uploadButton');
+        uploadButton.addEventListener('click', function() {
+            const file = fileInput.files[0];
             if (!file) {
                 return;
             }
