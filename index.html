@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>koolaid-in-pepsi da goat</title>
+    <title>Koolaid-in-Pepsi Animal Crossing Painting Converter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,19 +25,11 @@
         }
         #preview {
             margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .preview-container {
-            width: 50%;
-        }
-        .preview-container h2 {
-            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
-    <h1>koolaid-in-pepsi thing thats made for like animal crossing</h1>
+    <h1>Koolaid-in-Pepsi Animal Crossing Painting Converter</h1>
     <form id="uploadForm" enctype="multipart/form-data">
         <label for="file">Choose an image:</label>
         <input type="file" id="file" name="file" accept="image/*" required><br><br>
@@ -50,23 +42,72 @@
     </form>
     
     <div id="preview">
-        <div class="preview-container">
-            <h2>Nearest Neighbor Resized (1024x1024)</h2>
-            <canvas id="nearestNeighborCanvas" width="1024" height="1024"></canvas>
-        </div>
-        <div class="preview-container">
-            <h2>Cropped and Resized (64x64)</h2>
-            <canvas id="previewCanvas" width="64" height="64"></canvas>
-        </div>
+        <h2>Resized and Quantized (64x64)</h2>
+        <canvas id="previewCanvas" width="64" height="64"></canvas>
     </div>
     
     <script>
-        function resizeImage(image, width, height) {
+        // Define the color palette
+        const PALETTE = [
+            [255, 0, 0, 255],      // Red
+            [255, 165, 0, 255],    // Orange
+            [255, 255, 0, 255],    // Yellow
+            [57, 255, 20, 255],    // Neon
+            [0, 255, 0, 255],      // Green
+            [173, 216, 230, 255],  // Light Blue
+            [0, 128, 255, 255],    // Cool Blue
+            [0, 0, 255, 255],      // Blue
+            [128, 0, 128, 255],    // Purple
+            [255, 192, 203, 255],  // Pink
+            [255, 218, 185, 255],  // Peach
+            [165, 42, 42, 255],    // Brown
+            [255, 255, 255, 255],  // White
+            [128, 128, 128, 255],  // Grey
+            [0, 0, 0, 255],        // Black
+            [0, 0, 0, 0],          // Transparent
+        ];
+
+        function closestColor(pixel, palette) {
+            let minDist = Number.POSITIVE_INFINITY;
+            let closestColor = palette[0];
+
+            for (let i = 0; i < palette.length; i++) {
+                const color = palette[i];
+                const dist = Math.sqrt(
+                    Math.pow(pixel[0] - color[0], 2) +
+                    Math.pow(pixel[1] - color[1], 2) +
+                    Math.pow(pixel[2] - color[2], 2)
+                );
+
+                if (dist < minDist) {
+                    minDist = dist;
+                    closestColor = color;
+                }
+            }
+
+            return closestColor;
+        }
+
+        function quantizeImage(image, palette) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(image, 0, 0, width, height);
+            canvas.width = 64;
+            canvas.height = 64;
+
+            ctx.drawImage(image, 0, 0, 64, 64);
+            const imageData = ctx.getImageData(0, 0, 64, 64);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const pixel = [data[i], data[i + 1], data[i + 2], data[i + 3]];
+                const closest = closestColor(pixel, palette);
+                data[i] = closest[0];
+                data[i + 1] = closest[1];
+                data[i + 2] = closest[2];
+                data[i + 3] = closest[3];
+            }
+
+            ctx.putImageData(imageData, 0, 0);
             return canvas.toDataURL('image/png');
         }
 
@@ -84,20 +125,21 @@
             reader.onload = function(event) {
                 const img = new Image();
                 img.onload = function() {
-                    // Nearest Neighbor Resized (1024x1024)
-                    const nearestNeighborCanvas = document.getElementById('nearestNeighborCanvas');
-                    const ctxNN = nearestNeighborCanvas.getContext('2d');
-                    ctxNN.clearRect(0, 0, nearestNeighborCanvas.width, nearestNeighborCanvas.height);
-                    ctxNN.imageSmoothingEnabled = false; // Disable smoothing for nearest neighbor
-                    ctxNN.drawImage(img, 0, 0, 1024, 1024);
-
-                    // Cropped and Resized (64x64)
-                    const previewCanvas = document.getElementById('previewCanvas');
-                    const ctxPreview = previewCanvas.getContext('2d');
-                    ctxPreview.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-                    ctxPreview.fillStyle = '#0080ff'; // Cool Blue
-                    ctxPreview.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
-                    ctxPreview.drawImage(img, x, y, 64, 64, 0, 0, 64, 64);
+                    const canvas = document.getElementById('previewCanvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = '#0080ff'; // Cool Blue
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    const resizedImage = resizeImage(img, 64, 64);
+                    const quantizedDataURL = quantizeImage(resizedImage, PALETTE);
+                    
+                    const previewImage = new Image();
+                    previewImage.onload = function() {
+                        ctx.drawImage(previewImage, 0, 0);
+                    };
+                    previewImage.src = quantizedDataURL;
                 };
                 img.src = event.target.result;
             };
