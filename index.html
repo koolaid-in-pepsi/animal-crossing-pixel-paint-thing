@@ -8,6 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 40px;
+            background-color: #0080ff; /* Cool Blue */
         }
         h1 {
             color: #333;
@@ -19,7 +20,7 @@
             display: block;
             margin-top: 10px;
         }
-        input[type="number"], input[type="file"], button {
+        input[type="number"], input[type="file"] {
             margin-top: 5px;
         }
         #preview {
@@ -39,33 +40,24 @@
         <label for="y">Y Coordinate:</label>
         <input type="number" id="y" name="y" value="0" required><br><br>
         
-        <label for="width">Width:</label>
-        <input type="number" id="width" name="width" value="64" required><br><br>
-        
-        <label for="height">Height:</label>
-        <input type="number" id="height" name="height" value="64" required><br><br>
-        
-        <button type="button" onclick="convertImage()">Convert Image</button>
+        <canvas id="previewCanvas" width="64" height="64" style="display:none;"></canvas>
+        <br>
+        <a id="downloadLink" href="#" download="converted_image.png" style="display:none;">Download Converted Image</a>
     </form>
     
     <div id="preview">
         <h2>Preview:</h2>
-        <canvas id="previewCanvas" width="64" height="64" style="display:none;"></canvas>
-        <br>
-        <a id="downloadLink" href="#" download="converted_image.png" style="display:none;">Download Converted Image</a>
+        <img id="previewImage" src="#" alt="Image Preview" style="width: 64px; height: 64px;">
     </div>
     
     <script>
-        function convertImage() {
+        setInterval(() => {
             const fileInput = document.getElementById('file');
             const x = parseInt(document.getElementById('x').value, 10);
             const y = parseInt(document.getElementById('y').value, 10);
-            const width = parseInt(document.getElementById('width').value, 10);
-            const height = parseInt(document.getElementById('height').value, 10);
 
             const file = fileInput.files[0];
             if (!file) {
-                alert('Please select an image file.');
                 return;
             }
 
@@ -78,48 +70,20 @@
                     canvas.width = 64;
                     canvas.height = 64;
                     
-                    ctx.drawImage(img, x, y, width, height, 0, 0, 64, 64);
+                    ctx.fillStyle = '#0080ff'; // Cool Blue
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, x, y, img.width, img.height, 0, 0, 64, 64);
 
                     const imageData = ctx.getImageData(0, 0, 64, 64);
                     const data = imageData.data;
 
-                    // Define the color palette
-                    const palette = [
-                        [255, 0, 0, 255],      // Red
-                        [255, 165, 0, 255],    // Orange
-                        [255, 255, 0, 255],    // Yellow
-                        [57, 255, 20, 255],    // Neon
-                        [0, 255, 0, 255],      // Green
-                        [173, 216, 230, 255],  // Light Blue
-                        [0, 128, 255, 255],    // Cool Blue
-                        [0, 0, 255, 255],      // Blue
-                        [128, 0, 128, 255],    // Purple
-                        [255, 192, 203, 255],  // Pink
-                        [255, 218, 185, 255],  // Peach
-                        [165, 42, 42, 255],    // Brown
-                        [255, 255, 255, 255],  // White
-                        [128, 128, 128, 255],  // Grey
-                        [0, 0, 0, 255],        // Black
-                        [0, 0, 0, 0],          // Transparent
-                    ];
-
-                    // Quantize image
-                    for (let i = 0; i < data.length; i += 4) {
-                        const pixel = [data[i], data[i + 1], data[i + 2], data[i + 3]];
-                        const closestColor = findClosestColor(pixel, palette);
-                        data[i] = closestColor[0];
-                        data[i + 1] = closestColor[1];
-                        data[i + 2] = closestColor[2];
-                        data[i + 3] = closestColor[3];
-                    }
-
-                    ctx.putImageData(imageData, 0, 0);
-
-                    // Display converted image
+                    // Display preview
                     const previewCanvas = document.getElementById('previewCanvas');
-                    previewCanvas.style.display = 'block';
                     const ctxPreview = previewCanvas.getContext('2d');
-                    ctxPreview.putImageData(imageData, 0, 0);
+                    ctxPreview.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+                    ctxPreview.fillStyle = '#0080ff'; // Cool Blue
+                    ctxPreview.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+                    ctxPreview.drawImage(img, x, y, img.width, img.height, 0, 0, 64, 64);
 
                     // Display download link
                     const downloadLink = document.getElementById('downloadLink');
@@ -129,28 +93,7 @@
                 img.src = event.target.result;
             };
             reader.readAsDataURL(file);
-        }
-
-        function findClosestColor(pixel, palette) {
-            let minDistance = Number.POSITIVE_INFINITY;
-            let closestColor = null;
-
-            for (let i = 0; i < palette.length; i++) {
-                const color = palette[i];
-                const distance = Math.sqrt(
-                    Math.pow(pixel[0] - color[0], 2) +
-                    Math.pow(pixel[1] - color[1], 2) +
-                    Math.pow(pixel[2] - color[2], 2) +
-                    Math.pow(pixel[3] - color[3], 2)
-                );
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestColor = color;
-                }
-            }
-
-            return closestColor;
-        }
+        }, 1000);
     </script>
 </body>
 </html>
