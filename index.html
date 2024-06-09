@@ -29,10 +29,14 @@
         #previewCanvas {
             border: 1px solid #333;
         }
+        #downloadButton {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <h1>koolaid-in-pepsi's thing for animal crossing paintings or stuff</h1>
+
     <form id="uploadForm" enctype="multipart/form-data">
         <label for="file">Choose an image:</label>
         <input type="file" id="file" name="file" accept="image/*" required><br><br>
@@ -51,6 +55,10 @@
     <div id="preview">
         <h2>yo output image (64x64)</h2>
         <canvas id="previewCanvas" width="64" height="64"></canvas>
+        <br>
+        <a id="downloadButton" download="quantized_image.png">
+            <input type="button" value="Download Quantized Image">
+        </a>
     </div>
     
     <script>
