@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>koolaid-in-pepsi thing that like does the animal crossing painting</title>
+    <title>koolaid-in-pepsi da goat</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,13 +28,16 @@
             display: flex;
             justify-content: space-between;
         }
-        #preview .preview-container {
-            width: 64px;
+        .preview-container {
+            width: 50%;
+        }
+        .preview-container h2 {
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
-    <h1>Koolaid-in-Pepsi Animal Crossing Painting Converter</h1>
+    <h1>koolaid-in-pepsi thing thats made for like animal crossing</h1>
     <form id="uploadForm" enctype="multipart/form-data">
         <label for="file">Choose an image:</label>
         <input type="file" id="file" name="file" accept="image/*" required><br><br>
@@ -94,7 +97,7 @@
                     ctxPreview.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
                     ctxPreview.fillStyle = '#0080ff'; // Cool Blue
                     ctxPreview.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
-                    ctxPreview.drawImage(img, x, y, img.width, img.height, 0, 0, 64, 64);
+                    ctxPreview.drawImage(img, x, y, 64, 64, 0, 0, 64, 64);
                 };
                 img.src = event.target.result;
             };
