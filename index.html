@@ -54,7 +54,7 @@
     
     <div id="preview">
         <h2>yo output image (32x32)</h2>
-        <canvas id="previewCanvas" width="512" height="512"></canvas>
+        <canvas id="previewCanvas" width="32" height="32"></canvas>
         <br>
 <button id="downloadButton" onclick="downloadCanvas()">Download Quantized Image</button>
 
@@ -375,8 +375,8 @@
         function quantizeImage(image, palette, ditheringMethod) {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = 64;
-            canvas.height = 64;
+            canvas.width = 32;
+            canvas.height = 32;
 
             ctx.drawImage(image, 0, 0, 32, 32);
             const imageData = ctx.getImageData(0, 0, 32, 32);
