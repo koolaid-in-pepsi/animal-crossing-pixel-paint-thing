@@ -53,8 +53,8 @@
     </form>
     
     <div id="preview">
-        <h2>yo output image (64x64)</h2>
-        <canvas id="previewCanvas" width="64" height="64"></canvas>
+        <h2>yo output image (32x32)</h2>
+        <canvas id="previewCanvas" width="512" height="512"></canvas>
         <br>
 <button id="downloadButton" onclick="downloadCanvas()">Download Quantized Image</button>
 
@@ -378,24 +378,24 @@
             canvas.width = 64;
             canvas.height = 64;
 
-            ctx.drawImage(image, 0, 0, 64, 64);
-            const imageData = ctx.getImageData(0, 0, 64, 64);
+            ctx.drawImage(image, 0, 0, 32, 32);
+            const imageData = ctx.getImageData(0, 0, 32, 32);
 
             switch (ditheringMethod) {
                 case 'floyd-steinberg':
-                    applyFloydSteinberg(imageData, 64, 64);
+                    applyFloydSteinberg(imageData, 32, 32);
                     break;
                 case 'bayer2x2':
-                    applyBayer2x2(imageData, 64, 64);
+                    applyBayer2x2(imageData, 32, 32);
                     break;
                 case 'bayer4x4':
-                    applyBayer4x4(imageData, 64, 64);
+                    applyBayer4x4(imageData, 32, 32);
                     break;
                 case 'ordered3x3':
-                    applyOrdered3x3(imageData, 64, 64);
+                    applyOrdered3x3(imageData, 32, 32);
                     break;
                 case 'atkinson':
-                    applyAtkinson(imageData, 64, 64);
+                    applyAtkinson(imageData, 32, 32);
                     break;
                 default:
                     break;
@@ -437,10 +437,10 @@
                     const previewCanvas = document.getElementById('previewCanvas');
                     const ctx = previewCanvas.getContext('2d');
                     ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-                    ctx.drawImage(img, 0, 0, 64, 64);
+                    ctx.drawImage(img, 0, 0, 32, 32);
                     const quantizedImg = new Image();
                     quantizedImg.onload = function() {
-                        ctx.drawImage(quantizedImg, 0, 0, 64, 64);
+                        ctx.drawImage(quantizedImg, 0, 0, 32, 32);
                     };
                     quantizedImg.src = quantizedImage;
                 };
